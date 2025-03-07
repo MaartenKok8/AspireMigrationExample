@@ -1,0 +1,20 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: state-store
+spec:
+  type: state.mongodb
+  version: v1
+  metadata:
+    - name: host
+      value: "mongodb:27017"
+    - name: username
+      value: "user"
+    - name: password
+      value: "password"
+    - name: writeConcern
+      value: majority # Make sure writes are consistent
+    - name: readConcern
+      value: majority # Make sure reads are consistent
+    - name: params
+      value: "?authSource=admin"
