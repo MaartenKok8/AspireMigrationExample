@@ -6,9 +6,13 @@ using Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 builder.AddSharedServices();
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 app.AddSharedEndpoints();
 app.MapEventHandler<ProductAddedEvent>(async (ProductAddedEvent @event, IStateStore stateStore) =>
