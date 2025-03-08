@@ -20,7 +20,7 @@ namespace Shared.Extensions
             builder.Services.AddTransient<IPubSub, PubSub>();
             builder.Services.AddTransient<IStateStore, StateStore>();
 
-            builder.AddOpenTelemetry();
+            // builder.AddOpenTelemetry();
         }
 
         private static void AddOpenTelemetry(this IHostApplicationBuilder builder)
