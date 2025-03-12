@@ -9,13 +9,7 @@ namespace ApiGateway.Catalog
     {
         public static void AddCatalogServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<CatalogServiceOptions>(configuration.GetSection("CatalogService"));
-            services.AddHttpClient<CatalogService>((p, httpClient) =>
-                {
-                    var options = p.GetRequiredService<IOptionsMonitor<CatalogServiceOptions>>();
-                    httpClient.BaseAddress = new Uri(options.CurrentValue.BaseUrl);
-                })
-                .AddRetryPolicy();
+            services.AddHttpClient<CatalogService>(httpClient => httpClient.BaseAddress = new Uri("http+https://catalogservice"));
         }
 
         public static void AddCatalogEndpoints(this IEndpointRouteBuilder endpoints)

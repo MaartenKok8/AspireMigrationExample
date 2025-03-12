@@ -174,7 +174,7 @@ services:
       context: .
       dockerfile: src/ApiGateway/Dockerfile
     environment:
-      - CatalogService__BaseUrl=http://catalogservice:8080
+      - services__catalogservice__http__0=http://catalogservice:8080
       - Dapr__PubSub=pub-sub
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel:4317
       - OTEL_SERVICE_NAME=apigateway
