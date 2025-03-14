@@ -43,9 +43,7 @@ public class DistributedApplicationFixture
                 ]);
 
         builder.Services.AddLogging(b => b.AddXUnit(output));
-        var distributedApp = builder
-            .Build();
-
+        var distributedApp = builder.Build();
         await distributedApp.StartAsync();
         
         var resources = distributedApp.Services.GetRequiredService<ResourceNotificationService>();
