@@ -1,7 +1,5 @@
-﻿using Microsoft.Extensions.Options;
-using Shared.Dapr;
+﻿using Shared.Dapr;
 using Shared.Events;
-using Shared.Extensions;
 
 namespace ApiGateway.Catalog
 {

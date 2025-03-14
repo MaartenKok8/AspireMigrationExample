@@ -1,22 +1,16 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
-using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Testing;
-using Microsoft.Extensions.DependencyInjection;
+using Xunit.Abstractions;
 
 namespace IntegrationTests
 {
     [Collection(nameof(DistributedApplicationCollection))]
-    public class IntegrationTest(DistributedApplicationFixture distributedAppFixture)
+    public class IntegrationTest(DistributedApplicationFixture distributedAppFixture, ITestOutputHelper output)
     {
         protected async Task<HttpClient> GetGatewayClientAsync()
         {
-            var distributedApp = await distributedAppFixture.GetDistributedApplicationAsync();
-            
-            var resources = distributedApp.Services.GetRequiredService<ResourceNotificationService>();
-            await resources.WaitForResourceHealthyAsync("apigateway-dapr-cli") // Note we are waiting for the dapr sidecar to become active
-                .WaitAsync(TimeSpan.FromSeconds(120));
-            
+            var distributedApp = await distributedAppFixture.GetDistributedApplicationAsync(output);
             return distributedApp.CreateHttpClient("apigateway");
         }
 
