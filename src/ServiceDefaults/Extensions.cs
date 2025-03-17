@@ -1,13 +1,19 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using ServiceDefaults.Dapr;
+using ServiceDefaults.Events;
 
-namespace Microsoft.Extensions.Hosting;
+namespace ServiceDefaults;
 
 // Adds common .NET Aspire services: service discovery, resilience, health checks, and OpenTelemetry.
 // This project should be referenced by each service project in your solution.
@@ -16,6 +22,14 @@ public static class Extensions
 {
     public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
+        builder.Services.AddDaprClient();
+        builder.Services.Configure<DaprOptions>(builder.Configuration.GetSection("Dapr"));
+        builder.Services.AddTransient<IPubSub, PubSub>();
+        builder.Services.AddTransient<IStateStore, StateStore>();
+        
         builder.ConfigureOpenTelemetry();
 
         builder.AddDefaultHealthChecks();
@@ -114,8 +128,34 @@ public static class Extensions
             {
                 Predicate = r => r.Tags.Contains("live")
             });
+            
+            app.UseSwagger();
+            app.UseSwaggerUI();
         }
 
+        // Dapr subscription
+        app.MapSubscribeHandler();
+        app.UseCloudEvents();
+
         return app;
+    }
+    
+    public static RouteHandlerBuilder MapEventHandler<TEvent>(this IEndpointRouteBuilder builder, Delegate requestDelegate) where TEvent : IEvent
+    {
+        var daprOptions = builder.ServiceProvider.GetRequiredService<IOptionsMonitor<DaprOptions>>().CurrentValue;
+
+        return builder
+            .MapPost($"events/{TEvent.Topic}", requestDelegate)
+            .WithTopic(daprOptions.PubSub, TEvent.Topic, new Dictionary<string, string?>() { { "queueType", "quorum" } })
+            .AddEndpointFilterFactory((factoryContext, next) =>
+            {
+                var logger = factoryContext.ApplicationServices.GetRequiredService<ILogger<IEndpointRouteBuilder>>();
+
+                return async context =>
+                {
+                    logger.LogInformation("Processing event on topic '{Topic}'.", TEvent.Topic);
+                    return await next(context);
+                };
+            });
     }
 }

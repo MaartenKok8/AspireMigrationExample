@@ -1,4 +1,4 @@
-﻿namespace Shared.Events
+﻿namespace ServiceDefaults.Events
 {
     public interface IEvent
     {

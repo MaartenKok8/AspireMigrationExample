@@ -1,4 +1,4 @@
-﻿namespace Shared.Dapr
+﻿namespace ServiceDefaults.Dapr
 {
     public class DaprOptions
     {

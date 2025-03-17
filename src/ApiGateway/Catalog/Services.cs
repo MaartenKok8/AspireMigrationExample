@@ -1,5 +1,5 @@
-﻿using Shared.Dapr;
-using Shared.Events;
+﻿using ServiceDefaults.Dapr;
+using ServiceDefaults.Events;
 
 namespace ApiGateway.Catalog
 {

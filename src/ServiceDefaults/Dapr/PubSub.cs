@@ -1,9 +1,9 @@
 ﻿using Dapr.Client;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Shared.Events;
+using ServiceDefaults.Events;
 
-namespace Shared.Dapr
+namespace ServiceDefaults.Dapr
 {
     /// <summary>
     /// Dapr pub sub abstraction, allowing for unit test mocking as well as abstracting away the pub sub name used.
