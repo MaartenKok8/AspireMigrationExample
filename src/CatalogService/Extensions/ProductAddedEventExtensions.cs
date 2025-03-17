@@ -1,4 +1,4 @@
-﻿using Shared.Events;
+﻿using ServiceDefaults.Events;
 
 namespace CatalogService.Extensions
 {

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Shared.Dapr
+namespace ServiceDefaults.Dapr
 {
     /// <summary>
     /// Dapr state store abstraction, allowing for unit test mocking as well as abstracting away the state store name used.

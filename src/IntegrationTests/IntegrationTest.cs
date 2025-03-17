@@ -1,16 +1,20 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
+using Aspire.Hosting.Testing;
+using Xunit.Abstractions;
 
 namespace IntegrationTests
 {
-    public class IntegrationTest
+    [Collection(nameof(DistributedApplicationCollection))]
+    public class IntegrationTest(DistributedApplicationFixture distributedAppFixture, ITestOutputHelper output)
     {
-        protected static HttpClient GetGatewayClient() => new HttpClient
+        protected async Task<HttpClient> GetGatewayClientAsync()
         {
-            BaseAddress = new Uri("http://localhost:4000")
-        };
+            var distributedApp = await distributedAppFixture.GetDistributedApplicationAsync(output);
+            return distributedApp.CreateHttpClient("apigateway");
+        }
 
-        protected Task<T> PollGatewayUntilAsync<T>(Func<T, bool> check, string url) => PollUntilAsync(GetGatewayClient(), check, url);
+        protected async Task<T> PollGatewayUntilAsync<T>(Func<T, bool> check, string url) => await PollUntilAsync(await GetGatewayClientAsync(), check, url);
 
         private async Task<T> PollUntilAsync<T>(HttpClient httpClient, Func<T, bool> check, string url)
         {

@@ -1,16 +1,17 @@
 using CatalogService;
 using CatalogService.Extensions;
-using Shared.Dapr;
-using Shared.Events;
-using Shared.Extensions;
+using ServiceDefaults;
+using ServiceDefaults.Dapr;
+using ServiceDefaults.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddSharedServices();
+builder.AddServiceDefaults();
 
 var app = builder.Build();
 
-app.AddSharedEndpoints();
+app.MapDefaultEndpoints();
+
 app.MapEventHandler<ProductAddedEvent>(async (ProductAddedEvent @event, IStateStore stateStore) =>
 {
     // Some validation

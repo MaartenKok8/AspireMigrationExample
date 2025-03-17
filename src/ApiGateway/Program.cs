@@ -1,14 +1,16 @@
 using ApiGateway.Catalog;
-using Shared.Extensions;
+using ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddSharedServices();
+builder.AddServiceDefaults();
+
 builder.Services.AddCatalogServices(builder.Configuration);
 
 var app = builder.Build();
 
-app.AddSharedEndpoints();
+app.MapDefaultEndpoints();
+
 app.AddCatalogEndpoints();
 
 app.Run();

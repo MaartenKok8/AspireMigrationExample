@@ -6,7 +6,11 @@ on:
       - main
     paths:
       - 'src/**'
-      - 'docker-compose.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/**'
 
 jobs:
   build_and_test:
@@ -15,9 +19,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Docker compose up
+      - name: Install Dapr CLI
         run: |
-          docker compose -f docker-compose.yml up rabbitmq mongodb apigateway apigateway-dapr catalogservice catalogservice-dapr --wait
+          wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash
+          dapr init
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
@@ -27,14 +32,6 @@ jobs:
       - name: Run tests
         run: |
           dotnet test ./AspireMigrationExample.sln --configuration Release
-          
-      - name: Docker container status
-        if: ${{ always() }}
-        run: docker compose -f docker-compose.yml ps
-
-      - name: Docker container logs
-        if: ${{ always() }}
-        run: docker compose -f docker-compose.yml logs
 
 # As an example, pushing the images:
 #  push:
@@ -48,13 +45,11 @@ jobs:
 #          password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
 #
 #      - name: Build and push apigateway service
+#        working-directory: src/ApiGateway
 #        run: |
-#          docker compose build apigateway
-#          docker tag apigateway:latest ${{ vars.DOCKER_REGISTRY }}/apigateway:${VERSION}
-#          docker push ${{ vars.DOCKER_REGISTRY }}/apigateway:${VERSION}
+#          dotnet publish --os linux --arch x64 /t:PublishContainer -p ContainerImageTag=${VERSION} -p ContainerRegistry=${{ vars.DOCKER_REGISTRY }}
 #          
 #      - name: Build and push catalog service
+#        working-directory: src/CatalogService
 #        run: |
-#          docker compose build catalogservice
-#          docker tag catalogservice:latest ${{ vars.DOCKER_REGISTRY }}/catalogservice:${VERSION}
-#          docker push ${{ vars.DOCKER_REGISTRY }}/catalogservice:${VERSION}
+#          dotnet publish --os linux --arch x64 /t:PublishContainer -p ContainerImageTag=${VERSION} -p ContainerRegistry=${{ vars.DOCKER_REGISTRY }}
