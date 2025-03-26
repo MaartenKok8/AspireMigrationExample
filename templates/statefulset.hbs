@@ -13,7 +13,7 @@ metadata:
   {{/if}}
 spec:
   serviceName: "{{name}}"
-  replicas: 1
+  replicas: {{env.ASPIRE_REPLICAS}}
   selector:
     matchLabels:
       app: {{name}}

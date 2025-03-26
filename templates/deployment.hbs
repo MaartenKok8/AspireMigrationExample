@@ -13,7 +13,7 @@ metadata:
 {{/if}}
 spec:
   minReadySeconds: 60
-  replicas: 1
+  replicas: {{env.ASPIRE_REPLICAS}}
   selector:
     matchLabels:
       app: {{name}}
@@ -64,4 +64,12 @@ spec:
         - secretRef:
             name: {{name}}-secrets
         {{/if}}
+        
+        resources:
+          requests:
+            cpu: {{env.ASPIRE_CPU_REQUEST}}
+            memory: {{env.ASPIRE_MEMORY_REQUEST}}
+          limits:
+            cpu: {{env.ASPIRE_CPU_LIMIT}}
+            memory: {{env.ASPIRE_MEMORY_LIMIT}}
       terminationGracePeriodSeconds: 180
