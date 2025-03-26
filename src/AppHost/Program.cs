@@ -5,7 +5,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 var rabbitMq = builder
     .AddRabbitMQ("rabbitmq",
         userName: builder.AddParameter("RabbitMqUserName", () => "guest"),
-        password: builder.AddParameter("RabbitMqPassword", () => "guest"),
+        password: builder.AddParameter("RabbitMqPassword", () => "guest", secret: true),
         port: 5672)
     .WithLifetime(ContainerLifetime.Persistent);
 
@@ -13,7 +13,7 @@ var mongo = builder
     .AddMongoDB("mongodb", 
         port: 27017,
         userName: builder.AddParameter("MongoUserName", () => "user"),
-        password: builder.AddParameter("MongoPassword", () => "password"))
+        password: builder.AddParameter("MongoPassword", () => "password", secret: true))
     .WithLifetime(ContainerLifetime.Persistent);
 
 var pubSub = builder.AddDaprPubSub("pub-sub", new DaprComponentOptions
