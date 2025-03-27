@@ -1,0 +1,17 @@
+{
+  "projectPath": ".",
+  "outputPath": "aspirate-output",
+  "containerRegistry": "\u003Cyour entered container registry\u003E.azurecr.io",
+  "containerImageTags": [
+    "latest"
+  ],
+  "imagePullPolicy": "IfNotPresent",
+  "containerBuilder": "docker",
+  "templatePath": "../../templates",
+  "containerRepositoryPrefix": "aspire",
+  "outputFormat": "kustomize",
+  "disableSecrets": true,
+  "privateRegistryEmail": "aspir8@aka.ms",
+  "includeDashboard": true,
+  "useCustomNamespace": true
+}

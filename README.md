@@ -25,3 +25,23 @@ You can run the (integration) tests by executing:
 ```
 dotnet test ./AspireMigrationExample.sln --configuration Release
 ```
+
+### Deployment with Aspir8
+Install by executing:
+```
+dotnet tool install -g aspirate
+```
+
+Generate Kubernetes resources by executing:
+```
+aspirate generate `
+ --non-interactive `
+ --include-dashboard `
+ --image-pull-policy IfNotPresent `
+ --parameter RabbitMqUserName=guest `
+ --parameter RabbitMqPassword=guest `
+ --parameter MongoUserName=user `
+ --parameter MongoPassword=password
+```
+
+For more information, read the [blog post](https://maarten-kok.com/blog/migrating-an-existing-project-to-aspire-3).
